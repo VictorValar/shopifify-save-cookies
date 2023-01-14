@@ -14,6 +14,14 @@ function sendCookiesToLambdaAPI() {
     // Get the User-Agent request header
     var userAgent = navigator.userAgent;
 
+    // Get the transaction_id from the GTM DataLayer
+    var transaction_id;
+    try {
+        transaction_id = dataLayer.find(x => x.transaction_id);
+    } catch (e) {
+        console.error("Error getting transaction_id from GTM DataLayer: " + e);
+    }
+
     // Get the user's IP address
     var userIP;
     fetch("https://api.ipify.org?format=json")
@@ -29,7 +37,8 @@ function sendCookiesToLambdaAPI() {
                 "_ttpCookie": _ttpCookie,
                 "ttclidCookie": ttclidCookie,
                 "userAgent": userAgent,
-                "userIP": userIP
+                "userIP": userIP,
+                "transaction_id": transaction_id
             }
             var request = new XMLHttpRequest();
             request.open("POST", "https://YOUR_LAMBDA_HTTP_API", true);
