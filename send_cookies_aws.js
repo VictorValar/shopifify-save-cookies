@@ -1,11 +1,11 @@
 function sendCookiesToLambdaAPI() {
     // Get the _fbp, _fbc, gclid, _ttp and ttclid cookies
-    var fbpCookie, fbcCookie, gclidCookie, _ttpCookie, ttclidCookie;
+    var fbpCookie, fbcCookie, gclidCookie, ttpCookie, ttclidCookie;
     try {
         fbpCookie = getCookie("_fbp");
         fbcCookie = getCookie("_fbc");
         gclidCookie = getCookie("gclid");
-        _ttpCookie = getCookie("_ttp");
+        ttpCookie = getCookie("_ttp");
         ttclidCookie = getCookie("ttclid");
     } catch (e) {
         console.error("Error getting cookies: " + e);
@@ -34,7 +34,7 @@ function sendCookiesToLambdaAPI() {
                 "fbpCookie": fbpCookie,
                 "fbcCookie": fbcCookie,
                 "gclidCookie": gclidCookie,
-                "_ttpCookie": _ttpCookie,
+                "ttpCookie": ttpCookie,
                 "ttclidCookie": ttclidCookie,
                 "userAgent": userAgent,
                 "userIP": userIP,
