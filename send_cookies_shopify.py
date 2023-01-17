@@ -20,19 +20,19 @@ def options_handler(event, context):
     return response
 
 def main_handler(event, context):
-
+    print('EVENTTYPE:', type(event))
+    # event = json.loads(event.get('body')) if type(event) != dict else event
     print('EVENT:', event.get('body'))
-    event = json.loads(event.get('body'))
     print('EVENTTYPE:', type(event.get('body')))
     # Get event data
-    fbpCookie = event.get("fbpCookie")
-    fbcCookie = event.get("fbcCookie")
-    gclidCookie = event.get("gclidCookie")
-    ttpCookie = event.get("ttpCookie")
-    ttclidCookie = event.get("ttclidCookie")
-    userAgent = event.get("userAgent")
-    userIP = event.get("userIP")
-    order_name = 'name:CLUBEGL' + event.get("transaction_id")
+    fbpCookie = event.get("fbpCookie", "Not Found")
+    fbcCookie = event.get("fbcCookie", "Not Found")
+    gclidCookie = event.get("gclidCookie", "Not Found")
+    ttpCookie = event.get("ttpCookie", "Not Found")
+    ttclidCookie = event.get("ttclidCookie", "Not Found")
+    userAgent = event.get("userAgent", "Not Found")
+    userIP = event.get("userIP", "Not Found")
+    order_name = 'name:LOOD' + event.get("transaction_id")
 
     # Return 400 if any transaction_id is not found or is empty
     if not event.get("transaction_id"):
@@ -65,7 +65,6 @@ def main_handler(event, context):
             }
             """
 
-    print('QUERY:', query)
 
     headers = {'Content-Type': 'application/json', 'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN}
 
@@ -79,6 +78,7 @@ def main_handler(event, context):
         }
 
 
+    print('BEGIN ORDER QUERY')
     response = requests.post(f'https://{SHOPIFY_SHOP_URL}/admin/api/2023-01/graphql.json', json=data, headers=headers)
 
     result = response.json()
@@ -114,33 +114,41 @@ def main_handler(event, context):
 
     # Define the mutation query
     query = """
-            mutation orderUpdate($order_id: ID!, $customAttributes: [AttributeInput!]!) {
-                orderUpdate(input: {id:$order_id,customAttributes: $customAttributes}) {
-                    order {
+            mutation orderUpdate($input: OrderInput!) {
+              orderUpdate(input: $input) {
+                order {
                         id
                         name
                         customAttributes { key value }
-                    }
-                    userErrors {
-                        field
-                        message
-                    }
                 }
+                userErrors {
+                  field
+                  message
+                }
+              }
             }
             """
-    print('MUTATION:', query)
     # Execute the mutation
     headers = {'Content-Type': 'application/json', 'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN}
-
+    # print type of customAttributes
+    print('TYPE OF CUSTOM ATTRIBUTES:', type(customAttributes))
+    input = {
+        "id": order_id.replace("'", ''),
+        "customAttributes": list(customAttributes)
+    }
     variables = {
-      "order_id": order_id.replace("'", ""),
-      "customAttributes": customAttributes
+      "input": input,
     }
     data = {
       "query": query,
       "variables": variables
     }
 
+
+    # json_data = json.dumps(data)
+
+    print('BEGIN ORDER MUTATION')
+    print('DATA:', customAttributes)
     response = requests.post(f'https://{SHOPIFY_SHOP_URL}/admin/api/2023-01/graphql.json', json=data, headers=headers)
 
     result = response.json()
