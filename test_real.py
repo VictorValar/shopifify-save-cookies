@@ -1,7 +1,7 @@
 import unittest
 import os
 from dotenv import load_dotenv
-from qlTest import lambda_handler
+from send_cookies_shopify import lambda_handler
 
 class TestLambdaHandlerWithRealData(unittest.TestCase):
 
