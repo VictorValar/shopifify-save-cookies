@@ -45,7 +45,7 @@ def lambda_handler(event, context):
         }
 
 
-    response = requests.post('https://gusttavolimastore.myshopify.com/admin/api/2023-01/graphql.json', json=data, headers=headers)
+    response = requests.post(f'https://{SHOPIFY_SHOP_URL}/admin/api/2023-01/graphql.json', json=data, headers=headers)
 
     result = response.json()
 
@@ -101,7 +101,7 @@ def lambda_handler(event, context):
       "variables": variables
     }
 
-    response = requests.post('https://gusttavolimastore.myshopify.com/admin/api/2023-01/graphql.json', json=data, headers=headers)
+    response = requests.post(f'https://{SHOPIFY_SHOP_URL}/admin/api/2023-01/graphql.json', json=data, headers=headers)
 
     result = response.json()
 
