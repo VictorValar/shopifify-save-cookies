@@ -21,16 +21,35 @@ def options_handler(event, context):
 
 def main_handler(event, context):
 
-    print('EVENT:', event)
+    print('EVENT:', event.get('body'))
+    event = json.loads(event.get('body'))
+    print('EVENTTYPE:', type(event.get('body')))
     # Get event data
-    fbpCookie = event["fbpCookie"] if event["fbpCookie"] else None
-    fbcCookie = event["fbcCookie"] if event["fbpCookie"] else None
-    gclidCookie = event["gclidCookie"] if event["fbpCookie"] else None
-    ttpCookie = event["ttpCookie"] if event["fbpCookie"] else None
-    ttclidCookie = event["ttclidCookie"] if event["fbpCookie"] else None
-    userAgent = event["userAgent"] if event["fbpCookie"] else None
-    userIP = event["userIP"] if event["fbpCookie"] else None
-    order_name = 'name:CLUBEGL' + event["order_name"].replace("#", "")
+    fbpCookie = event.get("fbpCookie")
+    fbcCookie = event.get("fbcCookie")
+    gclidCookie = event.get("gclidCookie")
+    ttpCookie = event.get("ttpCookie")
+    ttclidCookie = event.get("ttclidCookie")
+    userAgent = event.get("userAgent")
+    userIP = event.get("userIP")
+    order_name = 'name:CLUBEGL' + event.get("transaction_id")
+
+    # Return 400 if any transaction_id is not found or is empty
+    if not event.get("transaction_id"):
+        print('TRANSACTION ID NOT FOUND')
+        return {
+            'statusCode': 400,
+            'body': json.dumps('TRANSACTION ID NOT FOUND'),
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        }
+        }
+
+
+    print('ORDER NAME:', order_name)
+
 
     query = """
             query orders($order_name: String) {
@@ -45,6 +64,8 @@ def main_handler(event, context):
                 }
             }
             """
+
+    print('QUERY:', query)
 
     headers = {'Content-Type': 'application/json', 'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN}
 
@@ -107,6 +128,7 @@ def main_handler(event, context):
                 }
             }
             """
+    print('MUTATION:', query)
     # Execute the mutation
     headers = {'Content-Type': 'application/json', 'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN}
 
