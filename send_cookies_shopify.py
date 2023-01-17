@@ -8,16 +8,29 @@ load_dotenv()
 SHOPIFY_SHOP_URL = os.getenv('SHOPIFY_SHOP_URL')
 SHOPIFY_ACCESS_TOKEN = os.getenv('SHOPIFY_ACCESS_TOKEN')
 
-def lambda_handler(event, context):
+def options_handler(event, context):
+    response = {
+        "statusCode": 200,
+        'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        },
+    }
+    return response
+
+def main_handler(event, context):
+
+    print('EVENT:', event)
     # Get event data
-    fbpCookie = event["fbpCookie"]
-    fbcCookie = event["fbcCookie"]
-    gclidCookie = event["gclidCookie"]
-    ttpCookie = event["ttpCookie"]
-    ttclidCookie = event["ttclidCookie"]
-    userAgent = event["userAgent"]
-    userIP = event["userIP"]
-    order_name = 'name:CLUBEGL' + event["order_name"]
+    fbpCookie = event["fbpCookie"] if event["fbpCookie"] else None
+    fbcCookie = event["fbcCookie"] if event["fbpCookie"] else None
+    gclidCookie = event["gclidCookie"] if event["fbpCookie"] else None
+    ttpCookie = event["ttpCookie"] if event["fbpCookie"] else None
+    ttclidCookie = event["ttclidCookie"] if event["fbpCookie"] else None
+    userAgent = event["userAgent"] if event["fbpCookie"] else None
+    userIP = event["userIP"] if event["fbpCookie"] else None
+    order_name = 'name:CLUBEGL' + event["order_name"].replace("#", "")
 
     query = """
             query orders($order_name: String) {
@@ -57,7 +70,12 @@ def lambda_handler(event, context):
     if len(result["data"]["orders"]["edges"]) == 0:
         return {
             'statusCode': 404,
-            'body': json.dumps('Order not found')
+            'body': json.dumps('Order not found'),
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        }
         }
 
     # Get the order ID and customAttributes from the query result
@@ -111,11 +129,20 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
-        'body': json.dumps('Event data added to order customAttributes')
+        'body': json.dumps('Event data added to order customAttributes'),
+        'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        },
     }
 
-if __name__ == "main":
-    lambda_handler()
+def lambda_handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        return options_handler(event, context)
+    else:
+        return main_handler(event, context)
+
 
 
 
