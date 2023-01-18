@@ -21,7 +21,7 @@ def options_handler(event, context):
 
 def main_handler(event, context):
     print('EVENTTYPE:', type(event))
-    # event = json.loads(event.get('body')) if type(event) != dict else event
+    event = json.loads(event.get('body'))
     print('EVENT:', event.get('body'))
     print('EVENTTYPE:', type(event.get('body')))
     # Get event data
@@ -32,7 +32,11 @@ def main_handler(event, context):
     ttclidCookie = event.get("ttclidCookie", "Not Found")
     userAgent = event.get("userAgent", "Not Found")
     userIP = event.get("userIP", "Not Found")
-    order_name = 'name:LOOD' + event.get("transaction_id")
+    print('NAME:', event.get("transaction_id"))
+    order_name = 'name:LOOD' + str(event.get("transaction_id")).replace('#', '')
+
+    print('EVENT:', event)
+
 
     # Return 400 if any transaction_id is not found or is empty
     if not event.get("transaction_id"):
