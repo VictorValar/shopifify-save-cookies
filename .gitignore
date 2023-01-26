@@ -6,7 +6,8 @@ __pycache__/
 venv/
 # C extensions
 *.so
-
+test.json
+test.py
 # Distribution / packaging
 .Python
 build/
