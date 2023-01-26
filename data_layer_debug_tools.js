@@ -45,9 +45,12 @@ function setCookie(cookieName, cookieValue, expirationTime) {
     return cookieValue;
 }
 
+console.log('test')
+
 /** Sets  _ttp, _fbp, _fbc, ttclid, gclid cookies for 60 * 60 * 24 * 365 */
 setCookie("_ttp", "HxUDi52cBXnnSVouGgRHQa5bIGd", 60 * 60 * 24 * 365);
-setCookie("_fbp", "'fb.2.1672238630727.1518967754'", 60 * 60 * 24 * 365);
-setCookie("_fbc", "fb.1.1614999288729.1103651826", 60 * 60 * 24 * 365);
+setCookie("_fbc", "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890", 60 * 60 * 24 * 365);
 setCookie("ttclid", "CyARIsAJrtdr7OMWygINU5NFCm8G", 60 * 60 * 24 * 365);
 setCookie("gclid", "Cj0KCQiAq5meBhCyARIsAJrtdr7OMWygINU5NFCm8GyeavAabLfArYh9j7qbKHb-an40LK82v6O1QvAaAmRoEALw_wcB", 60 * 60 * 24 * 365);
+
+setCookie("_fbp", "'fb.2.1672238630727.1518967754'", 60 * 60 * 24 * 365);
